@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>LifeBoard</title>
+
+<style>
+:root {
+    --bg: #f4f1ea;
+    --panel: #ffffff;
+    --text: #252823;
+    --muted: #74766f;
+    --green: #5f8068;
+    --dark: #26302a;
+    --line: #ddd9cf;
+    --danger: #a64b4b;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* SIDEBAR */
+
+.app {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 240px;
+    background: var(--dark);
+    color: white;
+    padding: 20px 14px;
+
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.logo {
+    font-size: 23px;
+    font-weight: bold;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.logo small {
+    display: block;
+    font-size: 11px;
+    color: #b9c6bc;
+    margin-top: 5px;
+}
+
+.nav button {
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: #dce5dd;
+    padding: 12px;
+    margin: 3px 0;
+    text-align: left;
+    border-radius: 9px;
+}
+
+.nav button:hover,
+.nav button.active {
+    background: #3c4c40;
+    color: white;
+}
+
+/* MAIN */
+
+.main {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+    padding: 30px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.topbar h1 {
+    margin: 0;
+}
+
+.topbar p {
+    color: var(--muted);
+}
+
+.search {
+    width: 320px;
+    padding: 11px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+}
+
+/* PAGES */
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+/* CARDS */
+
+.grid {
+    display: grid;
+    gap: 16px;
+}
+
+.cards {
+    grid-template-columns:
+        repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 15px;
+    padding: 18px;
+}
+
+.big {
+    font-size: 27px;
+    font-weight: bold;
+    margin: 8px 0;
+}
+
+.muted {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* BUTTONS */
+
+.toolbar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: var(--green);
+    color: white;
+}
+
+.btn.secondary {
+    background: white;
+    color: var(--text);
+    border: 1px solid var(--line);
+}
+
+.btn.danger {
+    background: var(--danger);
+}
+
+/* TABLE */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 12px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+}
+
+th {
+    background: #f7f6f2;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 20px;
+    background: #e8efe9;
+    font-size: 12px;
+}
+
+/* MODAL */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 25, 20, 0.5);
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-box {
+    width: min(600px, 100%);
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+}
+
+.field {
+    margin: 15px 0;
+}
+
+.field label {
+    display: block;
+    font-weight: bold;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.field input,
+.field textarea,
+.field select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+/* MOBILE */
+
+@media(max-width:800px) {
+
+    .sidebar {
+        width: 70px;
+        padding: 10px;
+    }
+
+    .logo {
+        font-size: 0;
+        text-align: center;
+    }
+
+    .logo:first-letter {
+        font-size: 22px;
+    }
+
+    .logo small,
+    .nav span {
+        display: none;
+    }
+
+    .nav button {
+        text-align: center;
+    }
+
+    .main {
+        margin-left: 70px;
+        width: calc(100% - 70px);
+        padding: 18px;
+    }
+
+    .topbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .search {
+        width: 100%;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+        LifeBoard
+        <small>Personal planner</small>
+    </div>
+
+    <div class="nav">
+
+        <button onclick="showPage('dashboard')">
+            🏠 <span>Dashboard</span>
+        </button>
+
+        <button onclick="showPage('route')">
+            🗺️ <span>Route</span>
+        </button>
+
+        <button onclick="showPage('budget')">
+            💰 <span>Budget</span>
+        </button>
+
+        <button onclick="showPage('tasks')">
+            ✓ <span>Taken</span>
+        </button>
+
+        <button onclick="showPage('riddles')">
+            ? <span>Raadsels</span>
+        </button>
+
+        <button onclick="showPage('family')">
+            👥 <span>Familie</span>
+        </button>
+
+        <button onclick="showPage('photos')">
+            📸 <span>Foto's</span>
+        </button>
+
+        <button onclick="showPage('montage')">
+            🎬 <span>Fotomontage</span>
+        </button>
+
+        <button onclick="showPage('links')">
+            🔗 <span>Links</span>
+        </button>
+
+        <button onclick="showPage('settings')">
+            ⚙️ <span>Instellingen</span>
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- MAIN -->
+
+<main class="main">
+
+<div class="topbar">
+
+    <div>
+        <h1 id="pageTitle">Dashboard</h1>
+        <p>Persoonlijke planner</p>
+    </div>
+
+    <input
+        class="search"
+        id="search"
+        placeholder="Zoeken..."
+    >
+
+</div>
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="page active">
+
+    <div class="grid cards">
+
+        <div class="card">
+            <div class="muted">Route</div>
+            <div class="big">8 stops</div>
+            <div class="muted">Vastgelegd</div>
+        </div>
+
+        <div class="card">
+            <div class="muted">Bekende kosten</div>
+            <div class="big">€3.901,02</div>
+        </div>
+
+        <div class="card">
+            <div class="muted">Spaardoel</div>
+            <div class="big">€4.681,22</div>
+        </div>
+
+        <div class="card">
+            <div class="muted">Datum</div>
+            <div class="big">01/07/2028</div>
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="grid cards">
+
+        <div class="card">
+
+            <h3>Project</h3>
+
+            <p>
+                20 Jaar Samen – Mama & Papa
+            </p>
+
+            <p class="muted">
+                Een centrale plek voor route,
+                budget, taken, raadsels,
+                foto's en planning.
+            </p>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Snelle acties</h3>
+
+            <div class="toolbar">
+
+                <button
+                    class="btn"
+                    onclick="showPage('tasks')"
+                >
+                    Taken
+                </button>
+
+                <button
+                    class="btn secondary"
+                    onclick="showPage('route')"
+                >
+                    Route
+                </button>
+
+                <button
+                    class="btn secondary"
+                    onclick="showPage('budget')"
+                >
+                    Budget
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ROUTE -->
+
+<section id="route" class="page">
+
+<div class="toolbar">
+
+    <button
+        class="btn"
+        onclick="addRoute()"
+    >
+        + Stop
+    </button>
+
+</div>
+
+<div class="card">
+
+<table>
+
+<thead>
+
+<tr>
+<th>#</th>
+<th>Locatie</th>
+<th>Betekenis</th>
+<th>Magneet</th>
+<th>Status</th>
+<th></th>
+</tr>
+
+</thead>
+
+<tbody id="routeTable"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- BUDGET -->
+
+<section id="budget" class="page">
+
+<div class="grid cards">
+
+<div class="card">
+<div class="muted">Bekende kosten</div>
+<div class="big">€3.901,02</div>
+</div>
+
+<div class="card">
+<div class="muted">Spaardoel</div>
+<div class="big">€4.681,22</div>
+</div>
+
+<div class="card">
+<div class="muted">Reserve</div>
+<div class="big">€780,20</div>
+</div>
+
+</div>
+
+<br>
+
+<div class="toolbar">
+
+<button
+class="btn"
+onclick="addBudget()"
+>
++ Kost
+</button>
+
+</div>
+
+<div class="card">
+
+<table>
+
+<thead>
+<tr>
+<th>Onderdeel</th>
+<th>Bedrag</th>
+<th>Type</th>
+<th>Status</th>
+<th></th>
+</tr>
+</thead>
+
+<tbody id="budgetTable"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- TAKEN -->
+
+<section id="tasks" class="page">
+
+<div class="toolbar">
+
+<button
+class="btn"
+onclick="addTask()"
+>
++ Taak
+</button>
+
+</div>
+
+<div class="card">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Taak</th>
+<th>Onderdeel</th>
+<th>Periode</th>
+<th>Status</th>
+<th>Prioriteit</th>
+<th></th>
+</tr>
+
+</thead>
+
+<tbody id="taskTable"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- RAADSELS -->
+
+<section id="riddles" class="page">
+
+<div class="card">
+
+<h3>Raadsels</h3>
+
+<p class="muted">
+Beheer hier de raadsels, antwoorden
+en unieke wachtwoorden.
+</p>
+
+</div>
+
+<br>
+
+<div class="toolbar">
+
+<button
+class="btn"
+onclick="addRiddle()"
+>
++ Raadsel
+</button>
+
+</div>
+
+<div class="card">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Stop</th>
+<th>Antwoord</th>
+<th>Wachtwoord</th>
+<th>Status</th>
+<th></th>
+</tr>
+
+</thead>
+
+<tbody id="riddleTable"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- FAMILIE -->
+
+<section id="family" class="page">
+
+<div class="toolbar">
+
+<button
+class="btn"
+onclick="addFamily()"
+>
++ Item
+</button>
+
+</div>
+
+<div class="card">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Taak</th>
+<th>Wie</th>
+<th>Onderdeel</th>
+<th>Status</th>
+<th></th>
+</tr>
+
+</thead>
+
+<tbody id="familyTable"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- FOTO'S -->
+
+<section id="photos" class="page">
+
+<div class="card">
+
+<h3>📸 Foto's</h3>
+
+<p class="muted">
+Hier kun je later foto's per stop organiseren.
+</p>
+
+</div>
+
+<br>
+
+<div class="grid cards">
+
+<div class="card">
+<h3>Stop 1</h3>
+<p class="muted">Café Theatre</p>
+</div>
+
+<div class="card">
+<h3>Stop 2</h3>
+<p class="muted">Muinkpark</p>
+</div>
+
+<div class="card">
+<h3>Stop 3</h3>
+<p class="muted">Mariakerksesteenweg</p>
+</div>
+
+<div class="card">
+<h3>Stop 4</h3>
+<p class="muted">Sint-Denijslaan</p>
+</div>
+
+<div class="card">
+<h3>Stop 5</h3>
+<p class="muted">AZ Maria Middelares</p>
+</div>
+
+<div class="card">
+<h3>Stop 6</h3>
+<p class="muted">Hinneknokweg</p>
+</div>
+
+<div class="card">
+<h3>Stop 7</h3>
+<p class="muted">Gemeentehuis</p>
+</div>
+
+<div class="card">
+<h3>Finale</h3>
+<p class="muted">Paul De Pierre</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- FOTOMONTAGE -->
+
+<section id="montage" class="page">
+
+<div class="toolbar">
+
+<button
+class="btn"
+onclick="addMontage()"
+>
++ Onderdeel
+</button>
+
+</div>
+
+<div class="card">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Onderdeel</th>
+<th>Inhoud</th>
+<th>Status</th>
+<th></th>
+</tr>
+
+</thead>
+
+<tbody id="montageTable"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- LINKS -->
+
+<section id="links" class="page">
+
+<div class="card">
+
+<h3>🔗 Externe tools</h3>
+
+<p class="muted">
+Canva, Google Drive, je website,
+Excel enzovoort.
+</p>
+
+<div id="linksList"></div>
+
+<br>
+
+<button
+class="btn"
+onclick="addLink()"
+>
++ Link
+</button>
+
+</div>
+
+</section>
+
+
+<!-- SETTINGS -->
+
+<section id="settings" class="page">
+
+<div class="grid cards">
+
+<div class="card">
+
+<h3>Back-up</h3>
+
+<p class="muted">
+Download al je gegevens.
+</p>
+
+<button
+class="btn"
+onclick="exportData()"
+>
+Exporteren
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h3>Importeren</h3>
+
+<input
+type="file"
+id="importFile"
+accept=".json"
+>
+
+</div>
+
+
+<div class="card">
+
+<h3>Reset</h3>
+
+<p class="muted">
+Herstel de standaardgegevens.
+</p>
+
+<button
+class="btn danger"
+onclick="resetData()"
+>
+Reset
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<!-- MODAL -->
+
+<div
+class="modal"
+id="modal"
+>
+
+<div
+class="modal-box"
+id="modalBox"
+></div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   DATA
+========================= */
+
+const defaultData = {
+
+route: [
+
+["1","Café Theatre","Eerste ontmoeting","Rood","Vastgelegd"],
+
+["2","Muinkpark","Eerste date","Roze","Vastgelegd"],
+
+["3","Mariakerksesteenweg 235","Eerste keer samen slapen","Rood","Vastgelegd"],
+
+["4","Sint-Denijslaan 327","Eerste huis samen","Bruin","Vastgelegd"],
+
+["5","AZ Maria Middelares","Geboorte eerste kind","Blauw","Vastgelegd"],
+
+["6","Hinneknokweg 7","Eerste huis met 1 kind","Blauw","Vastgelegd"],
+
+["7","Gemeentehuis","Huwelijk","Wit","Vastgelegd"],
+
+["8","Paul De Pierre","Feestelijke finale","Goud","Vastgelegd"]
+
+],
+
+budget: [
+
+["Magneten",5.81,"Bevestigd","Betaald"],
+
+["Deurmat",34.98,"Bevestigd","Te kopen"],
+
+["Enveloppen",9.33,"Bevestigd","Te kopen"],
+
+["Whiteboard",25.90,"Bevestigd","Te kopen"],
+
+["Photobooth",425,"Schatting","Te bevestigen"],
+
+["Paul De Pierre - eten",1600,"Schatting","Te bevestigen"],
+
+["Het Natuurlijk Genot - slapen",800,"Schatting","Te bevestigen"],
+
+["Minibusje",1000,"Schatting","Te bevestigen"]
+
+],
+
+tasks: [
+
+["Foto's verzamelen","Foto's","2026","Te doen","Hoog"],
+
+["Verhalen verzamelen","Route","2026","Te doen","Hoog"],
+
+["Budget verder uitwerken","Budget","2026","Te doen","Hoog"],
+
+["Prijsindicaties aanvragen","Leveranciers","2027","Te doen","Normaal"],
+
+["Locaties controleren","Route","2027","Te doen","Normaal"],
+
+["Reservaties bevestigen","Organisatie","2028","Te doen","Hoog"],
+
+["Materialen aankopen","Materialen","2028","Te doen","Hoog"],
+
+["Brieven afwerken","Raadsels","2028","Te doen","Hoog"],
+
+["Familiebriefing","Familie","2028","Te doen","Hoog"]
+
+],
+
+riddles: [
+
+["1","Café Theatre","","In ontwikkeling"],
+
+["2","Muinkpark","","In ontwikkeling"],
+
+["3","Mariakerksesteenweg 235","","In ontwikkeling"],
+
+["4","Sint-Denijslaan 327","","In ontwikkeling"],
+
+["5","AZ Maria Middelares","","In ontwikkeling"],
+
+["6","Hinneknokweg 7","","In ontwikkeling"],
+
+["7","Gemeentehuis","","In ontwikkeling"],
+
+["8","Paul De Pierre","","In ontwikkeling"]
+
+],
+
+family: [
+
+["Familie informeren","Familie","Briefing","Te doen"],
+
+["Foto's opvragen","Familie","Foto's","Te doen"],
+
+["Herinneringen opvragen","Familie","Verhalen","Te doen"],
+
+["Geheimhouding bewaken","Iedereen","Geheim","Te doen"]
+
+],
+
+montage: [
+
+["Ontmoeting","Oude foto's van de eerste ontmoeting","Te doen"],
+
+["Eerste date","Foto's en herinneringen","Te doen"],
+
+["Eerste huizen","Foto's van de huizen","Te doen"],
+
+["Huwelijk","Trouwfoto's en herinneringen","Te doen"],
+
+["Geboortes","Familiefoto's","Te doen"],
+
+["Vakanties","Reis- en familiefoto's","Te doen"],
+
+["2028-dag","Foto's tijdens de verrassingsdag","Te doen"],
+
+["Finale","Familiefoto en afsluitende boodschap","Te doen"]
+
+],
+
+links: []
+
+};
+
+
+/* =========================
+   LOAD DATA
+========================= */
+
+let data =
+JSON.parse(
+localStorage.getItem("lifeboard")
+) || structuredClone(defaultData);
+
+
+/* =========================
+   SAVE
+========================= */
+
+function save() {
+
+localStorage.setItem(
+"lifeboard",
+JSON.stringify(data)
+);
+
+render();
+
+}
+
+
+/* =========================
+   PAGE NAVIGATION
+========================= */
+
+const titles = {
+
+dashboard:"Dashboard",
+route:"Route",
+budget:"Budget",
+tasks:"Taken",
+riddles:"Raadsels",
+family:"Familie",
+photos:"Foto's",
+montage:"Fotomontage",
+links:"Links",
+settings:"Instellingen"
+
+};
+
+
+function showPage(page) {
+
+document
+.querySelectorAll(".page")
+.forEach(
+p => p.classList.remove("active")
+);
+
+document
+.getElementById(page)
+.classList.add("active");
+
+document
+.getElementById("pageTitle")
+.textContent = titles[page];
+
+}
+
+
+/* =========================
+   RENDER
+========================= */
+
+function render() {
+
+renderRoute();
+
+renderBudget();
+
+renderTasks();
+
+renderRiddles();
+
+renderFamily();
+
+renderMontage();
+
+renderLinks();
+
+}
+
+
+/* =========================
+   ROUTE
+========================= */
+
+function renderRoute() {
+
+document.getElementById("routeTable").innerHTML =
+
+data.route.map((x,i)=>`
+
+<tr>
+
+<td>${x[0]}</td>
+
+<td>
+<b>${x[1]}</b>
+</td>
+
+<td>${x[2]}</td>
+
+<td>
+<span class="badge">
+${x[3]}
+</span>
+</td>
+
+<td>${x[4]}</td>
+
+<td>
+<button
+class="btn secondary"
+onclick="deleteItem('route',${i})"
+>
+Verwijder
+</button>
+</td>
+
+</tr>
+
+`).join("");
+
+}
+
+
+/* =========================
+   BUDGET
+========================= */
+
+function renderBudget() {
+
+document.getElementById("budgetTable").innerHTML =
+
+data.budget.map((x,i)=>`
+
+<tr>
+
+<td>${x[0]}</td>
+
+<td>
+€${Number(x[1])
+.toFixed(2)
+.replace(".",",")}
+</td>
+
+<td>${x[2]}</td>
+
+<td>${x[3]}</td>
+
+<td>
+
+<button
+class="btn secondary"
+onclick="deleteItem('budget',${i})"
+>
+Verwijder
+</button>
+
+</td>
+
+</tr>
+
+`).join("");
+
+}
+
+
+/* =========================
+   TASKS
+========================= */
+
+function renderTasks() {
+
+document.getElementById("taskTable").innerHTML =
+
+data.tasks.map((x,i)=>`
+
+<tr>
+
+<td>${x[0]}</td>
+
+<td>${x[1]}</td>
+
+<td>${x[2]}</td>
+
+<td>
+
+<select
+onchange="
+data.tasks[${i}][3]=this.value;
+save();
+"
+>
+
+<option
+${x[3]=="Te doen"?"selected":""}
+>
+Te doen
+</option>
+
+<option
+${x[3]=="Bezig"?"selected":""}
+>
+Bezig
+</option>
+
+<option
+${x[3]=="Klaar"?"selected":""}
+>
+Klaar
+</option>
+
+</select>
+
+</td>
+
+<td>${x[4]}</td>
+
+<td>
+
+<button
+class="btn secondary"
+onclick="deleteItem('tasks',${i})"
+>
+Verwijder
+</button>
+
+</td>
+
+</tr>
+
+`).join("");
+
+}
+
+
+/* =========================
+   RAADSELS
+========================= */
+
+function renderRiddles() {
+
+document.getElementById("riddleTable").innerHTML =
+
+data.riddles.map((x,i)=>`
+
+<tr>
+
+<td>${x[0]}</td>
+
+<td>${x[1]}</td>
+
+<td>${x[2] || "—"}</td>
+
+<td>${x[3]}</td>
+
+<td>
+
+<button
+class="btn secondary"
+onclick="deleteItem('riddles',${i})"
+>
+Verwijder
+</button>
+
+</td>
+
+</tr>
+
+`).join("");
+
+}
+
+
+/* =========================
+   FAMILY
+========================= */
+
+function renderFamily() {
+
+document.getElementById("familyTable").innerHTML =
+
+data.family.map((x,i)=>`
+
+<tr>
+
+<td>${x[0]}</td>
+
+<td>${x[1]}</td>
+
+<td>${x[2]}</td>
+
+<td>${x[3]}</td>
+
+<td>
+
+<button
+class="btn secondary"
+onclick="deleteItem('family',${i})"
+>
+Verwijder
+</button>
+
+</td>
+
+</tr>
+
+`).join("");
+
+}
+
+
+/* =========================
+   MONTAGE
+========================= */
+
+function renderMontage() {
+
+document.getElementById("montageTable").innerHTML =
+
+data.montage.map((x,i)=>`
+
+<tr>
+
+<td>${x[0]}</td>
+
+<td>${x[1]}</td>
+
+<td>${x[2]}</td>
+
+<td>
+
+<button
+class="btn secondary"
+onclick="deleteItem('montage',${i})"
+>
+Verwijder
+</button>
+
+</td>
+
+</tr>
+
+`).join("");
+
+}
+
+
+/* =========================
+   LINKS
+========================= */
+
+function renderLinks() {
+
+document.getElementById("linksList").innerHTML =
+
+data.links.map((x,i)=>`
+
+<p>
+
+<a
+href="${x[1]}"
+target="_blank"
+>
+${x[0]}
+</a>
+
+<button
+class="btn secondary"
+onclick="deleteItem('links',${i})"
+>
+×
+</button>
+
+</p>
+
+`).join("");
+
+}
+
+
+/* =========================
+   DELETE
+========================= */
+
+function deleteItem(type,index) {
+
+if (
+confirm("Dit item verwijderen?")
+) {
+
+data[type].splice(index,1);
+
+save();
+
+}
+
+}
+
+
+/* =========================
+   MODAL
+========================= */
+
+function modal(title,html,saveFunction) {
+
+document.getElementById("modalBox").innerHTML = `
+
+<h2>${title}</h2>
+
+${html}
+
+<div class="actions">
+
+<button
+class="btn secondary"
+onclick="closeModal()"
+>
+Annuleren
+</button>
+
+<button
+class="btn"
+onclick="${saveFunction}"
+>
+Opslaan
+</button>
+
+</div>
+
+`;
+
+document
+.getElementById("modal")
+.classList.add("show");
+
+}
+
+
+function closeModal() {
+
+document
+.getElementById("modal")
+.classList.remove("show");
+
+}
+
+
+function field(id,label,placeholder="") {
+
+return `
+
+<div class="field">
+
+<label>${label}</label>
+
+<input
+id="${id}"
+placeholder="${placeholder}"
+>
+
+</div>
+
+`;
+
+}
+
+
+function value(id) {
+
+return document
+.getElementById(id)
+.value;
+
+}
+
+
+/* =========================
+   ADD ROUTE
+========================= */
+
+function addRoute() {
+
+modal(
+
+"Nieuwe stop",
+
+field("a","Locatie") +
+field("b","Betekenis") +
+field("c","Magneet"),
+
+`
+data.route.push([
+String(data.route.length+1),
+value("a"),
+value("b"),
+value("c"),
+"Nieuw"
+]);
+
+save();
+closeModal();
+`
+
+);
+
+}
+
+
+/* =========================
+   ADD BUDGET
+========================= */
+
+function addBudget() {
+
+modal(
+
+"Nieuwe kost",
+
+field("a","Onderdeel") +
+field("b","Bedrag","0.00") +
+field("c","Type","Schatting"),
+
+`
+data.budget.push([
+value("a"),
+Number(value("b")),
+value("c"),
+"Te bevestigen"
+]);
+
+save();
+closeModal();
+`
+
+);
+
+}
+
+
+/* =========================
+   ADD TASK
+========================= */
+
+function addTask() {
+
+modal(
+
+"Nieuwe taak",
+
+field("a","Taak") +
+field("b","Onderdeel") +
+field("c","Periode","2026"),
+
+`
+data.tasks.push([
+value("a"),
+value("b"),
+value("c"),
+"Te doen",
+"Normaal"
+]);
+
+save();
+closeModal();
+`
+
+);
+
+}
+
+
+/* =========================
+   ADD RIDDLE
+========================= */
+
+function addRiddle() {
+
+modal(
+
+"Nieuw raadsel",
+
+field("a","Stopnummer") +
+field("b","Antwoord") +
+field("c","Uniek wachtwoord"),
+
+`
+data.riddles.push([
+value("a"),
+value("b"),
+value("c"),
+"In ontwikkeling"
+]);
+
+save();
+closeModal();
+`
+
+);
+
+}
+
+
+/* =========================
+   ADD FAMILY
+========================= */
+
+function addFamily() {
+
+modal(
+
+"Nieuw familie-item",
+
+field("a","Taak") +
+field("b","Wie") +
+field("c","Onderdeel"),
+
+`
+data.family.push([
+value("a"),
+value("b"),
+value("c"),
+"Te doen"
+]);
+
+save();
+closeModal();
+`
+
+);
+
+}
+
+
+/* =========================
+   ADD MONTAGE
+========================= */
+
+function addMontage() {
+
+modal(
+
+"Nieuw montage-item",
+
+field("a","Onderdeel") +
+field("b","Inhoud"),
+
+`
+data.montage.push([
+value("a"),
+value("b"),
+"Te doen"
+]);
+
+save();
+closeModal();
+`
+
+);
+
+}
+
+
+/* =========================
+   ADD LINK
+========================= */
+
+function addLink() {
+
+modal(
+
+"Nieuwe link",
+
+field("a","Naam") +
+field("b","URL","https://"),
+
+`
+data.links.push([
+value("a"),
+value("b")
+]);
+
+save();
+closeModal();
+`
+
+);
+
+}
+
+
+/* =========================
+   EXPORT
+========================= */
+
+function exportData() {
+
+const blob =
+new Blob(
+[
+JSON.stringify(data,null,2)
+],
+{
+type:"application/json"
+}
+);
+
+const url =
+URL.createObjectURL(blob);
+
+const a =
+document.createElement("a");
+
+a.href = url;
+
+a.download =
+"lifeboard-backup.json";
+
+a.click();
+
+URL.revokeObjectURL(url);
+
+}
+
+
+/* =========================
+   IMPORT
+========================= */
+
+document
+.getElementById("importFile")
+.addEventListener(
+"change",
+function(event) {
+
+const file =
+event.target.files[0];
+
+if (!file) return;
+
+const reader =
+new FileReader();
+
+reader.onload =
+function() {
+
+try {
+
+data =
+JSON.parse(
+reader.result
+);
+
+save();
+
+alert(
+"Back-up geïmporteerd!"
+);
+
+}
+
+catch {
+
+alert(
+"Dit is geen geldig back-upbestand."
+);
+
+}
+
+};
+
+reader.readAsText(file);
+
+});
+
+
+/* =========================
+   RESET
+========================= */
+
+function resetData() {
+
+if (
+confirm(
+"Alle huidige gegevens vervangen?"
+)
+) {
+
+data =
+structuredClone(
+defaultData
+);
+
+save();
+
+}
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+document
+.getElementById("search")
+.addEventListener(
+"input",
+function() {
+
+const query =
+this.value.toLowerCase();
+
+document
+.querySelectorAll("tbody tr")
+.forEach(row => {
+
+row.style.display =
+row.innerText
+.toLowerCase()
+.includes(query)
+? ""
+: "none";
+
+});
+
+});
+
+
+/* =========================
+   START
+========================= */
+
+render();
+
+</script>
+
+</body>
+</html>
